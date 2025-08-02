@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Gratis - Firebase</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #fdbb2d);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 900px;
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.25);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 90vh;
+        }
+        
+        header {
+            background: #1a73e8;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .logo i {
+            font-size: 28px;
+        }
+        
+        .tagline {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+        
+        .main-content {
+            display: flex;
+            flex: 1;
+        }
+        
+        .sidebar {
+            width: 250px;
+            background: #f8f9fa;
+            border-right: 1px solid #e0e0e0;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .chat-header {
+            padding: 15px 20px;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #1a73e8;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+        }
+        
+        .chat-info h3 {
+            font-size: 18px;
+            font-weight: 500;
+        }
+        
+        .chat-info p {
+            font-size: 13px;
+            color: #5f6368;
+        }
+        
+        .messages-container {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            background: #f0f4f8;
+        }
+        
+        .message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .received {
+            background: #e9ecef;
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+        
+        .sent {
+            background: #1a73e8;
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .message .time {
+            font-size: 11px;
+            opacity: 0.7;
+            text-align: right;
+            margin-top: 5px;
+        }
+        
+        .input-area {
+            padding: 15px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            background: white;
+        }
+        
+        .input-area input {
+            flex: 1;
+            padding: 12px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 24px;
+            outline: none;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        .input-area input:focus {
+            border-color: #1a73e8;
+        }
+        
+        .input-area button {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 48px;
+            height: 48px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: background 0.3s;
+        }
+        
+        .input-area button:hover {
+            background: #0d62c9;
+        }
+        
+        .login-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .login-container h2 {
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        
+        .login-container p {
+            color: #5f6368;
+            margin-bottom: 20px;
+        }
+        
+        .login-container input {
+            padding: 14px;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        .login-container input:focus {
+            border-color: #1a73e8;
+        }
+        
+        .login-btn {
+            background: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .login-btn:hover {
+            background: #0d62c9;
+        }
+        
+        .user-list {
+            margin-top: 20px;
+        }
+        
+        .user-list h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #1a73e8;
+        }
+        
+        .user-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        
+        .user-item:hover {
+            background: #e9ecef;
+        }
+        
+        .user-item .status {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #34a853;
+        }
+        
+        .info-box {
+            background: #e8f0fe;
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .info-box h3 {
+            color: #1a73e8;
+            margin-bottom: 10px;
+        }
+        
+        .info-box p {
+            font-size: 14px;
+            color: #5f6368;
+            line-height: 1.5;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .firebase-info {
+            background: #e8f0fe;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+            font-size: 12px;
+            color: #5f6368;
+        }
+        
+        .firebase-info code {
+            display: block;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+            margin-top: 5px;
+            overflow-x: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                height: 95vh;
+            }
+            
+            .sidebar {
+                width: 200px;
+            }
+            
+            .message {
+                max-width: 85%;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .main-content {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                width: 100%;
+                height: 150px;
+                border-right: none;
+                border-bottom: 1px solid #e0e0e0;
+            }
+            
+            .message {
+                max-width: 90%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-comments"></i>
+                <span>Chat Gratis</span>
+            </div>
+            <div class="tagline">Aplikasi chat 100% gratis dengan Firebase</div>
+        </header>
+        
+        <div class="main-content">
+            <div class="sidebar">
+                <div class="login-container" id="login-section">
+                    <h2>Masuk untuk Chat</h2>
+                    <p>Masukkan nama pengguna untuk mulai chatting</p>
+                    <input type="text" id="username-input" placeholder="Nama Pengguna">
+                    <button class="login-btn" id="login-btn">Masuk</button>
+                </div>
+                
+                <div class="user-list hidden" id="user-list">
+                    <h3>Pengguna Online</h3>
+                    <div class="user-item">
+                        <div class="avatar">A</div>
+                        <div>
+                            <div>Admin</div>
+                            <div class="status"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="info-box">
+                    <h3>Info Aplikasi</h3>
+                    <p>Aplikasi chat gratis menggunakan Firebase sebagai database. Tidak perlu server, domain, atau biaya.</p>
+                    <p style="margin-top: 10px;">Fitur: Chat real-time, multi-pengguna, simpan riwayat chat.</p>
+                </div>
+                
+                <div class="firebase-info">
+                    <strong>Firebase Project:</strong>
+                    <code>free-chat-514a3</code>
+                    <strong>Status:</strong>
+                    <div class="status-indicator" id="firebase-status">Terhubung</div>
+                </div>
+            </div>
+            
+            <div class="chat-area hidden" id="chat-area">
+                <div class="chat-header">
+                    <div class="avatar">G</div>
+                    <div class="chat-info">
+                        <h3>Grup Umum</h3>
+                        <p>Semua pengguna</p>
+                    </div>
+                </div>
+                
+                <div class="messages-container" id="messages-container">
+                    <div class="message received">
+                        <div>Halo! Selamat datang di aplikasi chat gratis. Silakan mulai percakapan dengan pengguna lain.</div>
+                        <div class="time">Admin, 00:00</div>
+                    </div>
+                </div>
+                
+                <div class="input-area">
+                    <input type="text" id="message-input" placeholder="Ketik pesan...">
+                    <button id="send-btn"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+    
+    <script>
+        // Konfigurasi Firebase sesuai yang Anda berikan
+        const firebaseConfig = {
+            apiKey: "AIzaSyAVeYrDdMdhI85AxA0bXV-XLmuWiekULMA",
+            authDomain: "free-chat-514a3.firebaseapp.com",
+            projectId: "free-chat-514a3",
+            storageBucket: "free-chat-514a3.firebasestorage.app",
+            messagingSenderId: "766291847632",
+            appId: "1:766291847632:web:e8379be35a498b9a9af1d5",
+            measurementId: "G-WXSVPFPTVY"
+        };
+
+        // Inisialisasi Firebase
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+        const analytics = firebase.analytics();
+
+        // Referensi koleksi chat
+        const chatRef = db.collection("messages");
+
+        // Elemen DOM
+        const loginSection = document.getElementById('login-section');
+        const userList = document.getElementById('user-list');
+        const chatArea = document.getElementById('chat-area');
+        const usernameInput = document.getElementById('username-input');
+        const loginBtn = document.getElementById('login-btn');
+        const messagesContainer = document.getElementById('messages-container');
+        const messageInput = document.getElementById('message-input');
+        const sendBtn = document.getElementById('send-btn');
+        const firebaseStatus = document.getElementById('firebase-status');
+
+        let currentUsername = '';
+        
+        // Tampilkan status koneksi Firebase
+        firebaseStatus.style.color = "#34a853";
+        firebaseStatus.style.fontWeight = "bold";
+
+        // Login handler
+        loginBtn.addEventListener('click', () => {
+            const username = usernameInput.value.trim();
+            if (username) {
+                currentUsername = username;
+                loginSection.classList.add('hidden');
+                userList.classList.remove('hidden');
+                chatArea.classList.remove('hidden');
+                loadMessages();
+                
+                // Log event analytics
+                analytics.logEvent('user_login', { username: username });
+            } else {
+                alert('Silakan masukkan nama pengguna!');
+            }
+        });
+
+        // Kirim pesan handler
+        sendBtn.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        // Fungsi untuk mengirim pesan
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                // Tambahkan ke Firestore
+                chatRef.add({
+                    username: currentUsername,
+                    text: message,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                }).then(() => {
+                    messageInput.value = '';
+                    analytics.logEvent('send_message', { username: currentUsername });
+                }).catch((error) => {
+                    console.error("Error sending message: ", error);
+                    alert('Gagal mengirim pesan. Silakan coba lagi.');
+                });
+            }
+        }
+
+        // Fungsi untuk memuat pesan
+        function loadMessages() {
+            chatRef.orderBy('timestamp').onSnapshot(snapshot => {
+                messagesContainer.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    displayMessage(data.username, data.text, data.timestamp?.toDate());
+                });
+                // Scroll ke bawah
+                messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            }, (error) => {
+                console.error("Error loading messages: ", error);
+                firebaseStatus.textContent = "Koneksi terputus";
+                firebaseStatus.style.color = "#ea4335";
+            });
+        }
+
+        // Fungsi untuk menampilkan pesan
+        function displayMessage(username, text, timestamp) {
+            const isCurrentUser = username === currentUsername;
+            const formattedTime = timestamp ? 
+                `${timestamp.getHours().toString().padStart(2, '0')}:${timestamp.getMinutes().toString().padStart(2, '0')}` : 
+                'Baru saja';
+                
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isCurrentUser ? 'sent' : 'received');
+            
+            messageDiv.innerHTML = `
+                <div>${text}</div>
+                <div class="time">${isCurrentUser ? 'Anda' : username}, ${formattedTime}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+        }
+
+        // Contoh pesan awal
+        displayMessage('Admin', 'Halo! Selamat datang di aplikasi chat gratis. Silakan mulai percakapan dengan pengguna lain.', new Date());
+        
+        // Deteksi koneksi Firebase
+        firebase.firestore().enableNetwork()
+            .then(() => {
+                firebaseStatus.textContent = "Terhubung";
+                firebaseStatus.style.color = "#34a853";
+f            })
+            .catch((error) => {
+                firebaseStatus.textContent = "Koneksi terputus";
+                firebaseStatus.style.color = "#ea4335";
+            });
+    </script>
+</body>
+</html>
